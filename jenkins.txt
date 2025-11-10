@@ -1,0 +1,40 @@
+pipeline {
+    agent any // Specifies that the pipeline can run on any available agent
+
+    stages {
+        stage('Build') { // Defines a stage named 'Build'
+            steps {
+                echo 'Building the application-1.0' // Prints a message to the console
+                sh 'mvn deploy' // Executes a shell command (e.g., Maven build)
+            }
+        }
+
+        stage('Test') { // Defines a stage named 'Test'
+            steps {
+                echo 'Running tests...'
+                sh 'mvn test' // Executes tests
+                junit '**/target/surefire-reports/*.xml' // Publishes JUnit test results
+            }
+        }
+
+        stage('Deploy') { // Defines a stage named 'Deploy'
+            steps {
+                echo 'Deploying the application...'
+                // Add deployment steps here, e.g., to a server or cloud provider
+            }
+        }
+    }
+
+    post { // Defines actions to take after the pipeline finishes
+        always {
+            echo 'Pipeline finished.'
+            cleanWs() // Cleans up the workspace
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
